@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}{{ item.name }} - ERP System{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item"><a href="{% url 'item_list' %}">Items</a></li><li class="breadcrumb-item active">{{ item.name }}</li>{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold"><i class="bi bi-box-seam text-primary me-2"></i>{{ item.name }}</h2>
+    <div class="d-flex gap-2">
+        <a href="{% url 'item_update' item.pk %}" class="btn btn-primary"><i class="bi bi-pencil me-1"></i>Edit</a>
+        <a href="{% url 'item_delete' item.pk %}" class="btn btn-danger"><i class="bi bi-trash me-1"></i>Delete</a>
+    </div>
+</div>
+<div class="card">
+    <div class="card-header"><h5>Item Details</h5></div>
+    <div class="card-body">
+        <table class="table table-borderless">
+            <tr><td class="text-muted" style="width: 120px;">Company</td><td>{{ item.company.name }}</td></tr>
+            <tr><td class="text-muted">Unit</td><td><span class="badge bg-secondary">{{ item.unit }}</span></td></tr>
+        </table>
+    </div>
+</div>
+{% endblock %}

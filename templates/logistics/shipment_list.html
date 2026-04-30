@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Shipments - ERP System{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item active">Shipments</li>{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold"><i class="bi bi-box text-primary me-2"></i>Shipments</h2>
+    <a href="{% url 'shipment_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Add Shipment</a>
+</div>
+<div class="card">
+    <div class="card-body p-0">
+        {% if shipments %}
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead><tr><th>Company</th><th>Vehicle</th><th>Supply Type</th><th>Status</th><th>Date</th><th class="text-end">Actions</th></tr></thead>
+                <tbody>
+                    {% for s in shipments %}
+                    <tr>
+                        <td><a href="{% url 'shipment_detail' s.pk %}" class="fw-semibold text-decoration-none">{{ s.company.name }}</a></td>
+                        <td>{{ s.vehicle.vehicle_number }}</td>
+                        <td><span class="badge bg-secondary">{{ s.supply_type.name }}</span></td>
+                        <td><span class="badge bg-info">{{ s.consignment_status.name }}</span></td>
+                        <td>{{ s.date }}</td>
+                        <td class="text-end action-btns">
+                            <a href="{% url 'shipment_detail' s.pk %}" class="btn btn-sm btn-outline-info"><i class="bi bi-eye"></i></a>
+                            <a href="{% url 'shipment_update' s.pk %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                            <a href="{% url 'shipment_delete' s.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state"><i class="bi bi-box"></i><h5>No shipments found</h5><a href="{% url 'shipment_create' %}" class="btn btn-primary">Add Shipment</a></div>
+        {% endif %}
+    </div>
+    {% if page_obj %}
+    <div class="card-footer">{% include "includes/pagination.html" %}</div>
+    {% endif %}
+</div>
+{% endblock %}

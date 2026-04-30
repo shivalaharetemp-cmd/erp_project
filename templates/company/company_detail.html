@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}{{ company.name }} - ERP System{% endblock %}
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'company_list' %}">Companies</a></li>
+<li class="breadcrumb-item active">{{ company.name }}</li>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold"><i class="bi bi-building text-primary me-2"></i>{{ company.name }}</h2>
+    <div class="d-flex gap-2">
+        <a href="{% url 'company_update' company.pk %}" class="btn btn-primary"><i class="bi bi-pencil me-1"></i>Edit</a>
+        <a href="{% url 'company_delete' company.pk %}" class="btn btn-danger"><i class="bi bi-trash me-1"></i>Delete</a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header"><h5>Company Details</h5></div>
+            <div class="card-body">
+                <table class="table table-borderless">
+                    <tr><td class="text-muted" style="width: 150px;">GST Number</td><td><code>{{ company.gst_number }}</code></td></tr>
+                    <tr><td class="text-muted">Status</td>
+                        <td>{% if company.is_active %}<span class="badge bg-success">Active</span>{% else %}<span class="badge bg-secondary">Inactive</span>{% endif %}</td>
+                    </tr>
+                    <tr><td class="text-muted">Address</td><td style="white-space: pre-line;">{{ company.address }}</td></tr>
+                    <tr><td class="text-muted">Created</td><td>{{ company.created_at|date:"F d, Y H:i" }}</td></tr>
+                    <tr><td class="text-muted">Updated</td><td>{{ company.updated_at|date:"F d, Y H:i" }}</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

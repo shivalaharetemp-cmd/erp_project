@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Vouchers - ERP System{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item active">Vouchers</li>{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold"><i class="bi bi-receipt text-primary me-2"></i>Vouchers</h2>
+    <a href="{% url 'voucher_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Add Voucher</a>
+</div>
+<div class="card">
+    <div class="card-header">
+        <form method="get" class="row g-2">
+            <div class="col-md-3">
+                <select name="type" class="form-select" onchange="this.form.submit()">
+                    <option value="">All Types</option>
+                    <option value="PAYMENT" {% if request.GET.type == 'PAYMENT' %}selected{% endif %}>Payment</option>
+                    <option value="RECEIPT" {% if request.GET.type == 'RECEIPT' %}selected{% endif %}>Receipt</option>
+                    <option value="CONTRA" {% if request.GET.type == 'CONTRA' %}selected{% endif %}>Contra</option>
+                    <option value="JOURNAL" {% if request.GET.type == 'JOURNAL' %}selected{% endif %}>Journal</option>
+                    <option value="SALES" {% if request.GET.type == 'SALES' %}selected{% endif %}>Sales</option>
+                    <option value="PURCHASE" {% if request.GET.type == 'PURCHASE' %}selected{% endif %}>Purchase</option>
+                </select>
+            </div>
+        </form>
+    </div>
+    <div class="card-body p-0">
+        {% if vouchers %}
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead><tr><th>Type</th><th>Company</th><th>Date</th><th>Reference</th><th class="text-end">Actions</th></tr></thead>
+                <tbody>
+                    {% for v in vouchers %}
+                    <tr>
+                        <td><span class="badge bg-{% if v.type == 'PAYMENT' %}danger{% elif v.type == 'RECEIPT' %}success{% elif v.type == 'SALES' %}info{% elif v.type == 'PURCHASE' %}warning{% else %}secondary{% endif %}">{{ v.type }}</span></td>
+                        <td>{{ v.company.name }}</td>
+                        <td>{{ v.date }}</td>
+                        <td>{{ v.reference|default:"-" }}</td>
+                        <td class="text-end action-btns">
+                            <a href="{% url 'voucher_detail' v.pk %}" class="btn btn-sm btn-outline-info"><i class="bi bi-eye"></i></a>
+                            <a href="{% url 'voucher_update' v.pk %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                            <a href="{% url 'voucher_delete' v.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state"><i class="bi bi-receipt"></i><h5>No vouchers found</h5><a href="{% url 'voucher_create' %}" class="btn btn-primary">Add Voucher</a></div>
+        {% endif %}
+    </div>
+    {% if page_obj %}
+    <div class="card-footer">{% include "includes/pagination.html" %}</div>
+    {% endif %}
+</div>
+{% endblock %}

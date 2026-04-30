@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ERP System{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --sidebar-width: 260px;
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: linear-gradient(180deg, var(--primary-color) 0%, #1a252f 100%);
+            color: white;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+        .sidebar-brand {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .sidebar-brand h4 {
+            margin: 0;
+            font-weight: 600;
+        }
+        .sidebar-brand small {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.75rem;
+        }
+        .nav-menu {
+            padding: 1rem 0;
+        }
+        .nav-section {
+            padding: 0.5rem 1.5rem;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255,255,255,0.4);
+            margin-top: 1rem;
+        }
+        .nav-link {
+            color: rgba(255,255,255,0.8);
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: white;
+            background: rgba(255,255,255,0.1);
+            border-left: 3px solid var(--accent-color);
+        }
+        .nav-link i {
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+            min-height: 100vh;
+        }
+        .top-bar {
+            background: white;
+            padding: 1rem 2rem;
+            margin: -2rem -2rem 2rem -2rem;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .breadcrumb {
+            margin: 0;
+        }
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+        }
+        .card-header {
+            background: white;
+            border-bottom: 1px solid #f0f0f0;
+            padding: 1.25rem;
+            border-radius: 12px 12px 0 0 !important;
+        }
+        .card-header h5 {
+            margin: 0;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        .table {
+            margin: 0;
+        }
+        .table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+            border-top: none;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .btn {
+            border-radius: 8px;
+            padding: 0.5rem 1.25rem;
+            font-weight: 500;
+        }
+        .btn-primary {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+        .btn-primary:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+        }
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+        .stats-card {
+            background: linear-gradient(135deg, var(--accent-color) 0%, #2980b9 100%);
+            color: white;
+        }
+        .stats-card .card-title {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.875rem;
+        }
+        .stats-card .display-6 {
+            color: white;
+            font-weight: 700;
+        }
+        .action-btns .btn {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+        }
+        .badge {
+            padding: 0.5em 0.75em;
+            border-radius: 6px;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6c757d;
+        }
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: #dee2e6;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="sidebar-brand">
+            <h4><i class="bi bi-building-gear"></i> ERP</h4>
+            <small>Enterprise Resource Planning</small>
+        </div>
+        <div class="nav-menu">
+            <div class="nav-section">Main</div>
+            <a href="{% url 'dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+            
+            <div class="nav-section">Masters</div>
+            <a href="{% url 'company_list' %}" class="nav-link {% if 'company' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="bi bi-building"></i> Companies
+            </a>
+            <a href="{% url 'master_type_list' %}" class="nav-link {% if 'master_type' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="bi bi-tags"></i> Master Types
+            </a>
+            <a href="{% url 'master_list' %}" class="nav-link {% if 'master' in request.resolver_match.url_name and 'type' not in request.resolver_match.url_name %}active{% endif %}">
+                <i class="bi bi-database"></i> Masters
+            </a>
+            
+            <div class="nav-section">Accounts</div>
+            <a href="{% url 'mastergroup_list' %}" class="nav-link {% if 'mastergroup' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="bi bi-diagram-3"></i> Account Groups
+            </a>
+            <a href="{% url 'ledger_list' %}" class="nav-link {% if 'ledger' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="bi bi-journal-text"></i> Ledgers
+            </a>
+            <a href="{% url 'voucher_list' %}" class="nav-link {% if 'voucher' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="bi bi-receipt"></i> Vouchers
+            </a>
+            
+            <div class="nav-section">Inventory</div>
+            <a href="{% url 'item_list' %}" class="nav-link {% if 'item' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="bi bi-box-seam"></i> Items
+            </a>
+            <a href="{% url 'stocktransaction_list' %}" class="nav-link {% if 'stocktransaction' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="bi bi-arrow-left-right"></i> Stock Transactions
+            </a>
+            
+            <div class="nav-section">Logistics</div>
+            <a href="{% url 'vehicle_list' %}" class="nav-link {% if 'vehicle' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="bi bi-truck"></i> Vehicles
+            </a>
+            <a href="{% url 'shipment_list' %}" class="nav-link {% if 'shipment' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="bi bi-box"></i> Shipments
+            </a>
+            
+            <div class="nav-section">Workflow</div>
+            <a href="{% url 'vehicleplacement_list' %}" class="nav-link {% if 'vehicleplacement' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="bi bi-geo-alt"></i> Vehicle Placements
+            </a>
+            <a href="{% url 'loading_list' %}" class="nav-link {% if 'loading' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="bi bi-upload"></i> Loading
+            </a>
+            <a href="{% url 'dispatch_list' %}" class="nav-link {% if 'dispatch' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="bi bi-send"></i> Dispatch
+            </a>
+            <a href="{% url 'billing_list' %}" class="nav-link {% if 'billing' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="bi bi-cash-coin"></i> Billing
+            </a>
+            
+            <div class="nav-section">Reports</div>
+            <a href="{% url 'financial_summary' %}" class="nav-link {% if 'financial_summary' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="bi bi-pie-chart"></i> Financial Summary
+            </a>
+            <a href="{% url 'company_summary' %}" class="nav-link {% if 'company_summary' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="bi bi-buildings"></i> Company Summary
+            </a>
+            <a href="{% url 'ledger_report' %}" class="nav-link {% if 'ledger_report' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="bi bi-graph-up"></i> Ledger Report
+            </a>
+            <a href="{% url 'voucher_report' %}" class="nav-link {% if 'voucher_report' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="bi bi-receipt"></i> Voucher / Sales Report
+            </a>
+            <a href="{% url 'stock_report' %}" class="nav-link {% if 'stock_report' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="bi bi-boxes"></i> Stock Report
+            </a>
+            <a href="{% url 'vehicle_report' %}" class="nav-link {% if 'vehicle_report' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="bi bi-truck"></i> Vehicle Report
+            </a>
+            <a href="{% url 'workflow_report' %}" class="nav-link {% if 'workflow_report' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="bi bi-clock-history"></i> Workflow Report
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        {% if messages %}
+        <div class="messages mb-3">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="top-bar">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+                    {% block breadcrumb %}{% endblock %}
+                </ol>
+            </nav>
+            <div class="d-flex align-items-center gap-3">
+                <span class="text-muted">{% now "F j, Y" %}</span>
+                <a href="/admin/" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-shield-lock"></i> Admin
+                </a>
+            </div>
+        </div>
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

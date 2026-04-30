@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Ledgers - ERP System{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item active">Ledgers</li>{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold"><i class="bi bi-journal-text text-primary me-2"></i>Ledgers</h2>
+    <a href="{% url 'ledger_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Add Ledger</a>
+</div>
+<div class="card">
+    <div class="card-header">
+        <form method="get" class="row g-2">
+            <div class="col-md-4">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" name="search" class="form-control" placeholder="Search ledgers..." value="{{ request.GET.search }}">
+                    <button type="submit" class="btn btn-outline-secondary">Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="card-body p-0">
+        {% if ledgers %}
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead><tr><th>Name</th><th>Company</th><th>Group</th><th class="text-end">Actions</th></tr></thead>
+                <tbody>
+                    {% for l in ledgers %}
+                    <tr>
+                        <td><a href="{% url 'ledger_detail' l.pk %}" class="fw-semibold text-decoration-none">{{ l.name }}</a></td>
+                        <td>{{ l.company.name }}</td>
+                        <td><span class="badge bg-secondary">{{ l.group.name }}</span></td>
+                        <td class="text-end action-btns">
+                            <a href="{% url 'ledger_detail' l.pk %}" class="btn btn-sm btn-outline-info"><i class="bi bi-eye"></i></a>
+                            <a href="{% url 'ledger_update' l.pk %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                            <a href="{% url 'ledger_delete' l.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state"><i class="bi bi-journal-text"></i><h5>No ledgers found</h5><a href="{% url 'ledger_create' %}" class="btn btn-primary">Add Ledger</a></div>
+        {% endif %}
+    </div>
+    {% if page_obj %}
+    <div class="card-footer">{% include "includes/pagination.html" %}</div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Delete Loading - ERP System{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item"><a href="{% url 'loading_list' %}">Loading Records</a></li><li class="breadcrumb-item active">Delete</li>{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white"><h5 class="mb-0"><i class="bi bi-exclamation-triangle me-2"></i>Confirm Delete</h5></div>
+            <div class="card-body text-center py-5">
+                <i class="bi bi-upload text-danger" style="font-size: 4rem;"></i>
+                <h4 class="mt-3">Delete Loading Record?</h4>
+                <p class="text-muted">{{ loading.placement.vehicle.vehicle_number }} - {{ loading.start_time|date:"M d, Y" }}</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-flex justify-content-center gap-2">
+                        <button type="submit" class="btn btn-danger"><i class="bi bi-trash me-1"></i>Yes, Delete</button>
+                        <a href="{% url 'loading_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

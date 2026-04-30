@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Dispatches - ERP System{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item active">Dispatches</li>{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold"><i class="bi bi-send text-primary me-2"></i>Dispatches</h2>
+    <a href="{% url 'dispatch_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Add Dispatch</a>
+</div>
+<div class="card">
+    <div class="card-header">
+        <form method="get" class="row g-2">
+            <div class="col-md-3">
+                <select name="status" class="form-select" onchange="this.form.submit()">
+                    <option value="">All Status</option>
+                    <option value="DISPATCHED" {% if request.GET.status == 'DISPATCHED' %}selected{% endif %}>Dispatched</option>
+                    <option value="DELIVERED" {% if request.GET.status == 'DELIVERED' %}selected{% endif %}>Delivered</option>
+                </select>
+            </div>
+        </form>
+    </div>
+    <div class="card-body p-0">
+        {% if dispatches %}
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead><tr><th>Vehicle</th><th>Destination</th><th>Transporter</th><th>Dispatch Time</th><th>Status</th><th class="text-end">Actions</th></tr></thead>
+                <tbody>
+                    {% for d in dispatches %}
+                    <tr>
+                        <td><a href="{% url 'dispatch_detail' d.pk %}" class="fw-semibold text-decoration-none">{{ d.loading.placement.vehicle.vehicle_number }}</a></td>
+                        <td>{{ d.destination|truncatechars:20 }}</td>
+                        <td>{{ d.transporter }}</td>
+                        <td>{{ d.dispatch_time|date:"M d, H:i" }}</td>
+                        <td><span class="badge bg-{% if d.status == 'DISPATCHED' %}warning{% else %}success{% endif %}">{{ d.status }}</span></td>
+                        <td class="text-end action-btns">
+                            <a href="{% url 'dispatch_detail' d.pk %}" class="btn btn-sm btn-outline-info"><i class="bi bi-eye"></i></a>
+                            <a href="{% url 'dispatch_update' d.pk %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                            <a href="{% url 'dispatch_delete' d.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state"><i class="bi bi-send"></i><h5>No dispatches found</h5><a href="{% url 'dispatch_create' %}" class="btn btn-primary">Add Dispatch</a></div>
+        {% endif %}
+    </div>
+    {% if page_obj %}
+    <div class="card-footer">{% include "includes/pagination.html" %}</div>
+    {% endif %}
+</div>
+{% endblock %}

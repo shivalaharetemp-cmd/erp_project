@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}{% if object %}Edit{% else %}New{% endif %} Shipment - ERP System{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item"><a href="{% url 'shipment_list' %}">Shipments</a></li><li class="breadcrumb-item active">{% if object %}Edit{% else %}New{% endif %}</li>{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header"><h5 class="mb-0"><i class="bi bi-box me-2"></i>{% if object %}Edit{% else %}New{% endif %} Shipment</h5></div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-md-6"><label class="form-label">Company</label>{{ form.company }}</div>
+                        <div class="col-md-6"><label class="form-label">Vehicle</label>{{ form.vehicle }}</div>
+                        <div class="col-md-4"><label class="form-label">Supply Type</label>{{ form.supply_type }}</div>
+                        <div class="col-md-4"><label class="form-label">Sub Supply Type</label>{{ form.sub_supply_type }}</div>
+                        <div class="col-md-4"><label class="form-label">Document Type</label>{{ form.document_type }}</div>
+                        <div class="col-md-4"><label class="form-label">Transportation</label>{{ form.transportation_mode }}</div>
+                        <div class="col-md-4"><label class="form-label">Status</label>{{ form.consignment_status }}</div>
+                        <div class="col-md-4"><label class="form-label">Transaction Type</label>{{ form.transaction_type }}</div>
+                        <div class="col-md-4"><label class="form-label">Date</label>{{ form.date }}</div>
+                    </div>
+                    <hr>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>{% if object %}Update{% else %}Create{% endif %}</button>
+                        <a href="{% url 'shipment_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

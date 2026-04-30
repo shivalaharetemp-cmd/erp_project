@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Companies - ERP System{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item active">Companies</li>{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold"><i class="bi bi-building text-primary me-2"></i>Companies</h2>
+    <a href="{% url 'company_create' %}" class="btn btn-primary">
+        <i class="bi bi-plus-lg me-1"></i>Add Company
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <form method="get" class="row g-2">
+            <div class="col-md-4">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" name="search" class="form-control" placeholder="Search companies..." value="{{ request.GET.search }}">
+                    <button type="submit" class="btn btn-outline-secondary">Search</button>
+                </div>
+            </div>
+            {% if request.GET.search %}
+            <div class="col-auto">
+                <a href="{% url 'company_list' %}" class="btn btn-outline-secondary">Clear</a>
+            </div>
+            {% endif %}
+        </form>
+    </div>
+    <div class="card-body p-0">
+        {% if companies %}
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>GST Number</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for company in companies %}
+                    <tr>
+                        <td><a href="{% url 'company_detail' company.pk %}" class="fw-semibold text-decoration-none">{{ company.name }}</a></td>
+                        <td><code>{{ company.gst_number }}</code></td>
+                        <td>
+                            {% if company.is_active %}
+                            <span class="badge bg-success">Active</span>
+                            {% else %}
+                            <span class="badge bg-secondary">Inactive</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ company.created_at|date:"M d, Y" }}</td>
+                        <td class="text-end action-btns">
+                            <a href="{% url 'company_detail' company.pk %}" class="btn btn-sm btn-outline-info"><i class="bi bi-eye"></i></a>
+                            <a href="{% url 'company_update' company.pk %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                            <a href="{% url 'company_delete' company.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="bi bi-building"></i>
+            <h5>No companies found</h5>
+            <p>Get started by adding your first company</p>
+            <a href="{% url 'company_create' %}" class="btn btn-primary">Add Company</a>
+        </div>
+        {% endif %}
+    </div>
+    {% if page_obj %}
+    <div class="card-footer">
+        {% include "includes/pagination.html" %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Stock Transactions - ERP System{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item active">Stock Transactions</li>{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold"><i class="bi bi-arrow-left-right text-primary me-2"></i>Stock Transactions</h2>
+    <a href="{% url 'stocktransaction_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Add Transaction</a>
+</div>
+<div class="card">
+    <div class="card-header">
+        <form method="get" class="row g-2">
+            <div class="col-md-3">
+                <select name="type" class="form-select" onchange="this.form.submit()">
+                    <option value="">All Types</option>
+                    <option value="IN" {% if request.GET.type == 'IN' %}selected{% endif %}>Inward</option>
+                    <option value="OUT" {% if request.GET.type == 'OUT' %}selected{% endif %}>Outward</option>
+                </select>
+            </div>
+        </form>
+    </div>
+    <div class="card-body p-0">
+        {% if transactions %}
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead><tr><th>Item</th><th>Company</th><th>Type</th><th>Quantity</th><th>Date</th><th class="text-end">Actions</th></tr></thead>
+                <tbody>
+                    {% for t in transactions %}
+                    <tr>
+                        <td><a href="{% url 'stocktransaction_detail' t.pk %}" class="fw-semibold text-decoration-none">{{ t.item.name }}</a></td>
+                        <td>{{ t.company.name }}</td>
+                        <td>{% if t.type == 'IN' %}<span class="badge bg-success">Inward</span>{% else %}<span class="badge bg-danger">Outward</span>{% endif %}</td>
+                        <td>{{ t.quantity }}</td>
+                        <td>{{ t.date }}</td>
+                        <td class="text-end action-btns">
+                            <a href="{% url 'stocktransaction_detail' t.pk %}" class="btn btn-sm btn-outline-info"><i class="bi bi-eye"></i></a>
+                            <a href="{% url 'stocktransaction_update' t.pk %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                            <a href="{% url 'stocktransaction_delete' t.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state"><i class="bi bi-arrow-left-right"></i><h5>No transactions found</h5><a href="{% url 'stocktransaction_create' %}" class="btn btn-primary">Add Transaction</a></div>
+        {% endif %}
+    </div>
+    {% if page_obj %}
+    <div class="card-footer">{% include "includes/pagination.html" %}</div>
+    {% endif %}
+</div>
+{% endblock %}

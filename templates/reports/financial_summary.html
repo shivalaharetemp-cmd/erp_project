@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Financial Summary - ERP System{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item active">Financial Summary</li>{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold"><i class="bi bi-graph-up text-primary me-2"></i>Financial Summary</h2>
+</div>
+<div class="card mb-4">
+    <div class="card-header bg-light"><h6 class="mb-0"><i class="bi bi-funnel me-1"></i>Date Range</h6></div>
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-3">{{ form.start_date.label_tag }}{{ form.start_date }}</div>
+            <div class="col-md-3">{{ form.end_date.label_tag }}{{ form.end_date }}</div>
+            <div class="col-md-3 d-flex align-items-end gap-2">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-filter me-1"></i>Apply</button>
+                <a href="{% url 'financial_summary' %}" class="btn btn-outline-secondary"><i class="bi bi-x-circle"></i></a>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row g-3 mb-4">
+    <div class="col-md-3"><div class="card text-center p-3"><div class="text-muted small">Total Debit</div><div class="h4 text-primary fw-bold">{{ total_debit|default:0 }}</div></div></div>
+    <div class="col-md-3"><div class="card text-center p-3"><div class="text-muted small">Total Credit</div><div class="h4 text-success fw-bold">{{ total_credit|default:0 }}</div></div></div>
+    <div class="col-md-3"><div class="card text-center p-3"><div class="text-muted small">Total Billing</div><div class="h4 text-info fw-bold">{{ total_billing|default:0 }}</div></div></div>
+    <div class="col-md-3"><div class="card text-center p-3"><div class="text-muted small">Pending Billing</div><div class="h4 text-warning fw-bold">{{ pending_billing|default:0 }}</div></div></div>
+</div>
+<div class="row g-3 mb-4">
+    <div class="col-md-3"><div class="card text-center p-3"><div class="text-muted small">Stock In</div><div class="h4 text-success fw-bold">{{ stock_in|default:0 }}</div></div></div>
+    <div class="col-md-3"><div class="card text-center p-3"><div class="text-muted small">Stock Out</div><div class="h4 text-danger fw-bold">{{ stock_out|default:0 }}</div></div></div>
+    <div class="col-md-3"><div class="card text-center p-3"><div class="text-muted small">Entries</div><div class="h4 fw-bold">{{ entries_count|default:0 }}</div></div></div>
+    <div class="col-md-3"><div class="card text-center p-3"><div class="text-muted small">Transactions</div><div class="h4 fw-bold">{{ txns_count|default:0 }}</div></div></div>
+</div>
+<div class="card">
+    <div class="card-header"><h6 class="mb-0"><i class="bi bi-table me-1"></i>Group-wise Totals</h6></div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover mb-0">
+                <thead><tr><th>Group</th><th>Type</th><th class="text-end">Debit</th><th class="text-end">Credit</th><th class="text-end">Net</th></tr></thead>
+                <tbody>
+                    {% for name,tot in group_totals.items %}
+                    <tr>
+                        <td class="fw-semibold">{{ name }}</td>
+                        <td><span class="badge bg-{% if tot.type == 'ASSET' %}primary{% elif tot.type == 'LIABILITY' %}danger{% elif tot.type == 'INCOME' %}success{% else %}warning{% endif %}">{{ tot.type }}</span></td>
+                        <td class="text-end text-primary fw-bold">{{ tot.debit }}</td>
+                        <td class="text-end text-success fw-bold">{{ tot.credit }}</td>
+                        <td class="text-end fw-bold">{{ tot.debit|add:tot.credit|default:0 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="text-center py-4 text-muted">No data available.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

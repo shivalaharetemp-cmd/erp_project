@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Workflow Report - ERP System{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item active">Workflow Report</li>{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold"><i class="bi bi-diagram-3 text-primary me-2"></i>Workflow / Operations Report</h2>
+</div>
+<div class="card mb-4">
+    <div class="card-header bg-light"><h6 class="mb-0"><i class="bi bi-funnel me-1"></i>Filters</h6></div>
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-4">{{ form.company.label_tag }}{{ form.company }}</div>
+            <div class="col-md-4 d-flex align-items-end gap-2">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-filter me-1"></i>Filter</button>
+                <a href="{% url 'workflow_report' %}" class="btn btn-outline-secondary"><i class="bi bi-x-circle me-1"></i>Reset</a>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row g-3 mb-4">
+    <div class="col-md-3"><div class="card text-center p-3"><div class="text-muted small">Avg Waiting (hrs)</div><div class="h4 text-primary fw-bold">{{ avg_waiting|default:0 }}</div></div></div>
+    <div class="col-md-3"><div class="card text-center p-3"><div class="text-muted small">Avg Loading (hrs)</div><div class="h4 text-success fw-bold">{{ avg_loading|default:0 }}</div></div></div>
+    <div class="col-md-3"><div class="card text-center p-3"><div class="text-muted small">Dispatches</div><div class="h4 fw-bold">{{ status_counts.DELIVERED|default:0 }}</div></div></div>
+    <div class="col-md-3"><div class="card text-center p-3"><div class="text-muted small">Pending Billing</div><div class="h4 text-warning fw-bold">{{ billing_status_counts.BILLING_PENDING|default:0 }}</div></div></div>
+</div>
+<div class="row g-3 mb-4">
+    <div class="col-md-6"><div class="card"><div class="card-header bg-light"><h6 class="mb-0">Dispatch Status</h6></div><div class="card-body">{% for s,c in status_counts.items %}<div class="d-flex justify-content-between mb-1"><span>{{ s }}</span><span class="badge bg-primary">{{ c }}</span></div>{% empty %}<div class="text-muted">No data</div>{% endfor %}</div></div></div>
+    <div class="col-md-6"><div class="card"><div class="card-header bg-light"><h6 class="mb-0">Billing Status</h6></div><div class="card-body">{% for s,c in billing_status_counts.items %}<div class="d-flex justify-content-between mb-1"><span>{{ s }}</span><span class="badge bg-info">{{ c }}</span></div>{% empty %}<div class="text-muted">No data</div>{% endfor %}</div></div></div>
+</div>
+<div class="card">
+    <div class="card-header"><h6 class="mb-0"><i class="bi bi-table me-1"></i>Workflow Details</h6></div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover mb-0">
+                <thead><tr><th>Vehicle</th><th>Company</th><th>Waiting (hrs)</th><th>Loading (hrs)</th><th>Dispatch</th><th>Billing</th></tr></thead>
+                <tbody>
+                    {% for row in report_data %}
+                    <tr>
+                        <td><code>{{ row.vehicle }}</code></td>
+                        <td>{{ row.company }}</td>
+                        <td>{{ row.waiting_time|default:'—' }}</td>
+                        <td>{{ row.loading_time|default:'—' }}</td>
+                        <td><span class="badge bg-{% if row.status == 'DELIVERED' %}success{% elif row.status == 'DISPATCHED' %}warning{% else %}secondary{% endif %}">{{ row.status }}</span></td>
+                        <td><span class="badge bg-{% if row.billing_status == 'COMPLETED' %}success{% elif row.billing_status == 'BILLING_PENDING' %}warning{% else %}secondary{% endif %}">{{ row.billing_status }}</span></td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="6" class="text-center py-4 text-muted">No records found. Adjust filters.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

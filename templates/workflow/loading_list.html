@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Loading Records - ERP System{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item active">Loading Records</li>{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold"><i class="bi bi-upload text-primary me-2"></i>Loading Records</h2>
+    <a href="{% url 'loading_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Add Loading</a>
+</div>
+<div class="card">
+    <div class="card-header">
+        <form method="get" class="row g-2">
+            <div class="col-md-3">
+                <select name="status" class="form-select" onchange="this.form.submit()">
+                    <option value="">All Status</option>
+                    <option value="LOADING" {% if request.GET.status == 'LOADING' %}selected{% endif %}>Loading</option>
+                    <option value="COMPLETED" {% if request.GET.status == 'COMPLETED' %}selected{% endif %}>Completed</option>
+                </select>
+            </div>
+        </form>
+    </div>
+    <div class="card-body p-0">
+        {% if loadings %}
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead><tr><th>Vehicle</th><th>Start</th><th>End</th><th>Supervisor</th><th>Status</th><th class="text-end">Actions</th></tr></thead>
+                <tbody>
+                    {% for l in loadings %}
+                    <tr>
+                        <td><a href="{% url 'loading_detail' l.pk %}" class="fw-semibold text-decoration-none">{{ l.placement.vehicle.vehicle_number }}</a></td>
+                        <td>{{ l.start_time|date:"M d, H:i" }}</td>
+                        <td>{{ l.end_time|date:"M d, H:i"|default:"In Progress" }}</td>
+                        <td>{{ l.supervisor }}</td>
+                        <td><span class="badge bg-{% if l.status == 'LOADING' %}warning{% else %}success{% endif %}">{{ l.status }}</span></td>
+                        <td class="text-end action-btns">
+                            <a href="{% url 'loading_detail' l.pk %}" class="btn btn-sm btn-outline-info"><i class="bi bi-eye"></i></a>
+                            <a href="{% url 'loading_update' l.pk %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                            <a href="{% url 'loading_delete' l.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state"><i class="bi bi-upload"></i><h5>No loading records found</h5><a href="{% url 'loading_create' %}" class="btn btn-primary">Add Loading</a></div>
+        {% endif %}
+    </div>
+    {% if page_obj %}
+    <div class="card-footer">{% include "includes/pagination.html" %}</div>
+    {% endif %}
+</div>
+{% endblock %}

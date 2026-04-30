@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Billing Records - ERP System{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item active">Billing Records</li>{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold"><i class="bi bi-cash-coin text-primary me-2"></i>Billing Records</h2>
+    <a href="{% url 'billing_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Add Billing</a>
+</div>
+<div class="card">
+    <div class="card-header">
+        <form method="get" class="row g-2">
+            <div class="col-md-3">
+                <select name="status" class="form-select" onchange="this.form.submit()">
+                    <option value="">All Status</option>
+                    <option value="BILLING_PENDING" {% if request.GET.status == 'BILLING_PENDING' %}selected{% endif %}>Pending</option>
+                    <option value="COMPLETED" {% if request.GET.status == 'COMPLETED' %}selected{% endif %}>Completed</option>
+                </select>
+            </div>
+        </form>
+    </div>
+    <div class="card-body p-0">
+        {% if billings %}
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead><tr><th>Invoice #</th><th>Vehicle</th><th>Date</th><th>Amount</th><th>Status</th><th class="text-end">Actions</th></tr></thead>
+                <tbody>
+                    {% for b in billings %}
+                    <tr>
+                        <td><a href="{% url 'billing_detail' b.pk %}" class="fw-semibold text-decoration-none">{{ b.invoice_number }}</a></td>
+                        <td><code>{{ b.dispatch.loading.placement.vehicle.vehicle_number }}</code></td>
+                        <td>{{ b.invoice_date }}</td>
+                        <td class="fw-bold">{{ b.amount }}</td>
+                        <td><span class="badge bg-{% if b.status == 'BILLING_PENDING' %}warning{% else %}success{% endif %}">{{ b.status }}</span></td>
+                        <td class="text-end action-btns">
+                            <a href="{% url 'billing_detail' b.pk %}" class="btn btn-sm btn-outline-info"><i class="bi bi-eye"></i></a>
+                            <a href="{% url 'billing_update' b.pk %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                            <a href="{% url 'billing_delete' b.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state"><i class="bi bi-cash-coin"></i><h5>No billing records found</h5><a href="{% url 'billing_create' %}" class="btn btn-primary">Add Billing</a></div>
+        {% endif %}
+    </div>
+    {% if page_obj %}
+    <div class="card-footer">{% include "includes/pagination.html" %}</div>
+    {% endif %}
+</div>
+{% endblock %}

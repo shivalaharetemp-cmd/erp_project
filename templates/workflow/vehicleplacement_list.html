@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Vehicle Placements - ERP System{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item active">Vehicle Placements</li>{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold"><i class="bi bi-geo-alt text-primary me-2"></i>Vehicle Placements</h2>
+    <a href="{% url 'vehicleplacement_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Add Placement</a>
+</div>
+<div class="card">
+    <div class="card-header">
+        <form method="get" class="row g-2">
+            <div class="col-md-3">
+                <select name="status" class="form-select" onchange="this.form.submit()">
+                    <option value="">All Status</option>
+                    <option value="PLACED" {% if request.GET.status == 'PLACED' %}selected{% endif %}>Placed</option>
+                </select>
+            </div>
+        </form>
+    </div>
+    <div class="card-body p-0">
+        {% if placements %}
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead><tr><th>Company</th><th>Vehicle</th><th>Placement Time</th><th>Status</th><th class="text-end">Actions</th></tr></thead>
+                <tbody>
+                    {% for p in placements %}
+                    <tr>
+                        <td><a href="{% url 'vehicleplacement_detail' p.pk %}" class="fw-semibold text-decoration-none">{{ p.company.name }}</a></td>
+                        <td><code>{{ p.vehicle.vehicle_number }}</code></td>
+                        <td>{{ p.placement_time|date:"M d, Y H:i" }}</td>
+                        <td><span class="badge bg-{% if p.status == 'PLACED' %}warning{% else %}success{% endif %}">{{ p.status }}</span></td>
+                        <td class="text-end action-btns">
+                            <a href="{% url 'vehicleplacement_detail' p.pk %}" class="btn btn-sm btn-outline-info"><i class="bi bi-eye"></i></a>
+                            <a href="{% url 'vehicleplacement_update' p.pk %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                            <a href="{% url 'vehicleplacement_delete' p.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state"><i class="bi bi-geo-alt"></i><h5>No placements found</h5><a href="{% url 'vehicleplacement_create' %}" class="btn btn-primary">Add Placement</a></div>
+        {% endif %}
+    </div>
+    {% if page_obj %}
+    <div class="card-footer">{% include "includes/pagination.html" %}</div>
+    {% endif %}
+</div>
+{% endblock %}

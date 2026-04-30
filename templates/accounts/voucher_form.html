@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}{% if object %}Edit{% else %}New{% endif %} Voucher - ERP System{% endblock %}
+{% block breadcrumb %}<li class="breadcrumb-item"><a href="{% url 'voucher_list' %}">Vouchers</a></li><li class="breadcrumb-item active">{% if object %}Edit{% else %}New{% endif %}</li>{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card">
+            <div class="card-header"><h5 class="mb-0"><i class="bi bi-receipt me-2"></i>{% if object %}Edit{% else %}New{% endif %} Voucher</h5></div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4"><label class="form-label">Company</label>{{ form.company }}</div>
+                        <div class="col-md-3"><label class="form-label">Date</label>{{ form.date }}</div>
+                        <div class="col-md-3"><label class="form-label">Type</label>{{ form.type }}</div>
+                        <div class="col-md-2"><label class="form-label">Reference</label>{{ form.reference }}</div>
+                    </div>
+                    <h6 class="fw-bold mb-3">Entries</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm" id="entries-table">
+                            <thead><tr><th>Ledger</th><th>Debit</th><th>Credit</th><th>Delete</th></tr></thead>
+                            <tbody>
+                                {{ formset.management_form }}
+                                {% for entry in formset %}
+                                <tr class="entry-row">
+                                    <td>{{ entry.ledger }}</td>
+                                    <td>{{ entry.debit }}</td>
+                                    <td>{{ entry.credit }}</td>
+                                    <td>{% if entry.instance.pk %}{{ entry.DELETE }}{% endif %}{{ entry.id }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <hr>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>{% if object %}Update{% else %}Create{% endif %}</button>
+                        <a href="{% url 'voucher_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
